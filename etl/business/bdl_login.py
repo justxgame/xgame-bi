@@ -37,7 +37,7 @@ print 'endTimeStr=%s' %endTimeStr
 
 sql = "replace into bi.bdl_login (player_id,server_id,login_time) " \
       "select player_id , server_id, DATE_FORMAT(FROM_UNIXTIME(timestamp),'%Y-%m-%d') as login_time  " \
-      "from bi_log.bi_log where timestamp > UNIX_TIMESTAMP('{0}') and timestamp  < UNIX_TIMESTAMP('{1}')  " \
+      "from bi_log.bi_log where timestamp >= UNIX_TIMESTAMP('{0}') and timestamp  < UNIX_TIMESTAMP('{1}')  " \
       "and op_id = 1 group by player_id , server_id,  login_time"
 
 formatSql = sql.format(startTimeStr,endTimeStr)

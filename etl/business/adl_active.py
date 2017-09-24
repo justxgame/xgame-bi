@@ -36,8 +36,8 @@ print 'endTimeStr=%s' %endTimeStr
 #endDate = datetime.datetime.strptime(endTimeStr, argDateFormat).date()
 
 sql = "replace into bi_kpi.active (date,dau,server_id) " \
-      "select  DATE_FORMAT(login_time,'%Y-%m-%d') as date, count(*) , server_id as dau from bi.bdl_login " \
-      "where login_time > STR_TO_DATE('{0}', '%Y-%m-%d') and login_time  < STR_TO_DATE('{1}', '%Y-%m-%d') " \
+      "select DATE_FORMAT(login_time,'%Y-%m-%d') as date, count(*) , server_id as dau from bi.bdl_login " \
+      "where login_time >= STR_TO_DATE('{0}', '%Y-%m-%d') and login_time  < STR_TO_DATE('{1}', '%Y-%m-%d') " \
       "group by date , server_id "
 
 formatSql = sql.format(startTimeStr,endTimeStr)
