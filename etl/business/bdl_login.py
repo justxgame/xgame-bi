@@ -1,14 +1,10 @@
-# !/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# __init__.py
 
 import MySQLdb
 import traceback
 import dbConfig
 import sys
-import re
-import time
-import datetime
 
 # =========================================================#
 # 脚本说明 ， 生成 bi的login的中间表
@@ -16,7 +12,6 @@ import datetime
 #       1, 其实时间 例:  2017-09-20
 #       2, 结束时间 例:  2017-09-25
 # =========================================================#
-
 
 print 'args:', str(sys.argv)
 
