@@ -31,24 +31,27 @@ print 'endTimeStr=%s' %endTimeStr
 #startDate = datetime.datetime.strptime(startTimeStr, argDateFormat).date()
 #endDate = datetime.datetime.strptime(endTimeStr, argDateFormat).date()
 
-sql1 = "replace into bi_kpi.active (date,server_id,dau) " \
-       "select tmp.date,tmp.server_id,IFNULL(result.dau,0) as dau from bi.bdl_mid_tmp tmp left join " \
-       "( select DATE_FORMAT(login_time,'%Y-%m-%d') as date, count(*) as dau, server_id  " \
-       " from bi.bdl_login where login_time >= STR_TO_DATE('{0}', '%Y-%m-%d') and login_time  <= STR_TO_DATE('{1}', '%Y-%m-%d') " \
-       " group by date , server_id) result on tmp.date = result.date and tmp.server_id = result.server_id"
+sql1 = "replace into bi_kpi.pay (date,server_id,pay) " \
+       "select tmp.date,tmp.server_id,IFNULL(result.pay,0) as pay from bi.bdl_mid_tmp tmp left join " \
+       "( select  DATE_FORMAT(pay_time,'%Y-%m-%d') as date,server_id , sum(old_value) as pay " \
+       " from bi.bdl_pay where pay_time >= STR_TO_DATE('{0}', '%Y-%m-%d') and " \
+       "pay_time  <= STR_TO_DATE('{1}', '%Y-%m-%d') group by date , server_id) " \
+       "result on tmp.date = result.date and tmp.server_id = result.server_id"
 
 formatSql1 = sql1.format(startTimeStr,endTimeStr)
-print 'active sql1=%s' %formatSql1
+print 'pay sql1=%s' %formatSql1
 
-sql2 = "replace into bi_kpi.new_active (date,server_id,active_num) " \
-       "select tmp.date,tmp.server_id,IFNULL(result.active_num,0) as pay from bi.bdl_mid_tmp tmp left join " \
-       "(select  DATE_FORMAT(login_time,'%Y-%m-%d') as date,  server_id , count(*) as active_num from" \
-       " ( select server_id , player_id , min(login_time) as login_time " \
-       " from bi.bdl_login where login_time >= STR_TO_DATE('{0}', '%Y-%m-%d') and login_time  <= STR_TO_DATE('{1}', '%Y-%m-%d') " \
-       " group by player_id ,server_id) as active_all_table  group by date , server_id) result on tmp.date = result.date and tmp.server_id = result.server_id"
+sql2 = "replace into bi_kpi.pay_number (date,server_id,pay_number) " \
+       "select tmp.date,tmp.server_id,IFNULL(result.pay_number,0) as pay_number " \
+       "from bi.bdl_mid_tmp tmp left join" \
+       " (select DATE_FORMAT(pay_time,'%Y-%m-%d') as date,server_id ," \
+       "  count(*) as pay_number  from bi.bdl_pay " \
+       " where pay_time >= STR_TO_DATE('{0}', '%Y-%m-%d') " \
+       " and pay_time  <= STR_TO_DATE('{1}', '%Y-%m-%d') " \
+       " group by date , server_id) result on tmp.date = result.date and tmp.server_id = result.server_id"
 
 formatSql2 = sql2.format(startTimeStr,endTimeStr)
-print 'active sql2=%s' %formatSql2
+print 'pay sql2=%s' %formatSql2
 
 # 打开数据库连接
 db = MySQLdb.connect(host=dbConfig.db_host, user=dbConfig.db_user,
